@@ -11,15 +11,13 @@ import (
 	"net/url"
 )
 
-// Request is sent by this client. It was created to make it less
-// possible to mess up and use a regular http.Client to send data.
+// Request is sent by this client. It was created so it was more
+// apparent by looking at the types that this is a new type of request
+// so it should be sent with a new kind of client (i.e I wanted to
+// make it less possible to mess up and use a regular http.Client to
+// send requests).
 type Request struct {
-	request *http.Request
-}
-
-// NewRequest creates a Request.
-func NewRequest(r *http.Request) Request {
-	return Request{r}
+	*http.Request
 }
 
 // Client sends http requests and modifies the returned error so it
@@ -38,9 +36,9 @@ func (c Client) httpClient() *http.Client {
 // Do sends the request and removes any query string from the returned
 // error message.
 func (c Client) Do(r Request) (*http.Response, error) {
-	resp, err := c.httpClient().Do(r.request)
+	resp, err := c.httpClient().Do(r.Request)
 	if urlErr, ok := err.(*url.Error); ok {
-		urlNoQuery := *r.request.URL
+		urlNoQuery := *r.URL
 		urlNoQuery.RawQuery = ""
 		return resp, fmt.Errorf("sending request: %s %s: %v", urlErr.Op, urlNoQuery.String(), urlErr.Err)
 	}
