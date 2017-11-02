@@ -38,7 +38,7 @@ func TestClientDo(t *testing.T) {
 			if err != nil {
 				panic(err)
 			}
-			resp, err := client.Do(httpnoquery.NewRequest(req))
+			resp, err := client.Do(httpnoquery.Request{req})
 			if err != nil {
 				t.Errorf("got non-nil error: %v", err)
 			}
@@ -62,7 +62,7 @@ func TestClientDoNoQueryStr(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	_, err = client.Do(httpnoquery.NewRequest(req))
+	_, err = client.Do(httpnoquery.Request{req})
 	if got, want := fmt.Sprintf("%v", err), "sending request: Get /path:"; !strings.Contains(got, want) {
 		t.Errorf("error string %s should contain the message %s", got, want)
 	}
